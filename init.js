@@ -39,10 +39,13 @@ let cellsContent = document.querySelector(".cells-content");
   cellsContent.innerHTML = cellsContentHtml;
 })();
 
+let sheetsDB = [];
 let db;
 
+/* changing the database pointer on new sheet addition which will point to another sheet database */
+
 function initDB(){
-    db = [];
+  let newDB = [];
     for(let i=0 ; i<100 ; i++){
         let row = [];
         for(let j=0 ; j<26 ; j++){
@@ -56,8 +59,11 @@ function initDB(){
             }
             row.push(cellObject);
         }
-        db.push(row);
+        newDB.push(row);
     }
-    // console.log(db);
+    db = newDB;
+    sheetsDB.push(newDB);
+    //console.log(sheetsDB);
 };
+
 initDB();
