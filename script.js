@@ -25,41 +25,61 @@ let colId;
 let lastSelectedCell;
 
 // if cell is clicked show address and formula of that cell (applied to cells div instead of applying it to each cell)
-cells.addEventListener("click" , function(e){
-    let currentCell = e.target;
-    rowId = Number(currentCell.getAttribute("rowid"));
-    colId = Number(currentCell.getAttribute("colid"));
-    let address = String.fromCharCode(65+colId) + (rowId+1)+"";
-    let cellObject = db[rowId][colId];
-    // console.log(address);
-    addressInput.value = address;
-    formulaInput.value = cellObject.formula;
-})
+cells.addEventListener("click", function (e) {
+  let currentCell = e.target;
+  rowId = Number(currentCell.getAttribute("rowid"));
+  colId = Number(currentCell.getAttribute("colid"));
+  let address = String.fromCharCode(65 + colId) + (rowId + 1) + "";
+  let cellObject = db[rowId][colId];
+  // console.log(address);
+  addressInput.value = address;
+  formulaInput.value = cellObject.formula;
+});
 
 // if focus is gone then set value in db
-for(let i=0 ; i<allCells.length  ; i++){
-    allCells[i].addEventListener("blur" , function(e){
-        let currentElement = e.target;
-        lastSelectedCell = currentElement;
-        let value = currentElement.textContent;
-        let cellObject = db[rowId][colId]; 
-        if(value != cellObject.value){
-            cellObject.value = value;
-            // console.log(db);
-        }
-    })
+for (let i = 0; i < allCells.length; i++) {
+  allCells[i].addEventListener("blur", function (e) {
+    let currentElement = e.target;
+    lastSelectedCell = currentElement;
+    let value = currentElement.textContent;
+    let cellObject = db[rowId][colId];
+
+    // value to value and formula to value edge case handled
+
+    if (value != cellObject.value) {
+      if (cellObject.formula) {
+        deleteFormula(cellObject);
+      }
+
+      cellObject.value = value;
+      // console.log(db);
+      updateChildrens(cellObject);
+    }
+  });
 }
 
 // for formula
-formulaInput.addEventListener("blur" , function(e){
-    let formula = formulaInput.value;
-    if(formula && lastSelectedCell){
-        let solvedValue = solveFormula(formula);
-        // set UI
-        lastSelectedCell.textContent  = solvedValue;
-        // set DB
-        let cellObject = db[rowId][colId];
-        cellObject.value = solvedValue;
-        cellObject.formula = formula;
+formulaInput.addEventListener("blur", function (e) {
+  let formula = formulaInput.value;
+
+  // value to formula and formula to formula edge cases handled
+
+  if (formula && lastSelectedCell) {
+    let cellObject = db[rowId][colId];
+
+    if (cellObject.formula != formula) {
+      if (cellObject.formula) {
+        deleteFormula(cellObject);
+      }
+
+      let solvedValue = solveFormula(formula, cellObject);
+      // set UI
+      lastSelectedCell.textContent = solvedValue;
+      // set DB
+      cellObject.value = solvedValue;
+      cellObject.formula = formula;
+      // console.log(db);
+      updateChildrens(cellObject);
     }
-})
+  }
+});

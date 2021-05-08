@@ -2,6 +2,7 @@
     box-sizing: border-box;
     margin: 0px;
     padding: 0px;
+    font-family: 'Lato', sans-serif;
 }
 
 .menu {
@@ -23,7 +24,7 @@
 .cells-content {
     height: calc( 100vh - 110px );
     overflow: auto;
-    font-size: 0.8rem;
+    font-size: 12px;
     position: relative;
 }
 
