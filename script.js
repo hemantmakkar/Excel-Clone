@@ -34,6 +34,8 @@ cells.addEventListener("click", function (e) {
   // console.log(address);
   addressInput.value = address;
   formulaInput.value = cellObject.formula;
+
+  setMenu(cellObject); 
 });
 
 // if focus is gone then set value in db
@@ -55,6 +57,14 @@ for (let i = 0; i < allCells.length; i++) {
       // console.log(db);
       updateChildrens(cellObject);
     }
+  });
+
+  allCells[i].addEventListener("keyup", function (e) {
+    // getBoundingClientRect() function find width, height of an element
+    let { height } = e.target.getBoundingClientRect();
+    let rowId = e.target.getAttribute("rowid");
+    let leftColCell = document.querySelector(`div[cell-id="${rowId}"]`);
+    leftColCell.style.height = height + "px";
   });
 }
 
